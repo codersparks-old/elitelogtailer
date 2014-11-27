@@ -14,6 +14,12 @@ class EliteLogTailer
   def tail(restClient)
 
     logFileName = self.find_latest_log()
+    
+    if logFileName == nil
+      raise "Cannot find the latest log file"
+    end
+    
+    @logger.info("Latest log: #{logFileName}")
 
     lastSystem = ""
 
@@ -25,7 +31,7 @@ class EliteLogTailer
       log.tail { |line|
         # The following are for debug, do not uncommend unless you want lots of text on console
         #puts line
-        #@logger.debug("Parsing line: #{line}")
+        @logger.debug("Parsing line: #{line}")
         parsed_system = parse_line(line)
 
         if parsed_system != nil
@@ -38,10 +44,11 @@ class EliteLogTailer
             else
               @logger.info("System #{parsed_system} not found in db")
               Sound.play("sysnotfound.wav")
+              lastSystem = parsed_system
             end
           else 
             if lastSystem == parsed_system
-              @logger.info("Parsed system #{parsed_system} matches previous system #{parsed_system}")
+              @logger.info("Parsed system #{parsed_system} matches previous system #{lastSystem}")
             end
           end
         end
