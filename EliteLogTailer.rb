@@ -4,10 +4,11 @@ require 'win32/sound'
 include Win32
 
 class EliteLogTailer
-  def initialize(directory)
+  def initialize(directory, end_of_file)
     @logger = Logging.logger[self]
     @directory = directory
     @logger.info("EliteLogTailer constructed looking at directory: #{@directory}")
+    @end_of_file = end_of_file 
   end
 
   def tail(restClient)
@@ -20,6 +21,7 @@ class EliteLogTailer
       log.extend(File::Tail)
       log.interval = 10
       log.backward(10)
+      log.return_if_eof = @end_of_file
       log.tail { |line|
         # The following are for debug, do not uncommend unless you want lots of text on console
         #puts line

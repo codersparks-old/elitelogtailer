@@ -10,7 +10,13 @@ Logging.logger.root.add_appenders(
 logger = Logging.logger["EliteLogTailerMain"]
 
 
-options = {:dirname => nil, :logging => "WARN", :test_db => false, :url => 'http://edstarcoordinator.com/api.asmx/GetSystems' }
+options = {
+  :dirname => nil,
+  :logging => "WARN", 
+  :test_db => false,
+  :url => 'http://edstarcoordinator.com/api.asmx/GetSystems',
+  :end_of_file => false
+}
 
 optparse = OptionParser.new do |opts|
   opts.on('-d', '--directory DIRECTORY', 'The directory containing the netLog files') do |d|
@@ -21,6 +27,9 @@ optparse = OptionParser.new do |opts|
   end
   opts.on('-t', '--test_db', "If supplied the script will use the test database") do |t|
     options[:test_db] = t
+  end
+  opts.on('-e', '--end_of_file', "If supplied the script will terminate at end of log file") do |e|
+    options[:end_of_file] = e
   end
 end
 
@@ -42,8 +51,11 @@ else
   Logging.logger.root.level = :warn 
 end
 
+if options[:dirname] == nil 
+  raise "Log directory not supplied"
+end
 
 restClient = EDSCRestClient.new(options[:url], options[:test_db])
-elt = EliteLogTailer.new(options[:dirname])
+elt = EliteLogTailer.new(options[:dirname], options[:end_of_file])
 
 elt.tail(restClient)
