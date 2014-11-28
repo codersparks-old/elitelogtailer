@@ -32,10 +32,12 @@ The default log direcory is normally (for win7 machine):
 
 * I have yet to have this happen to me but if the log "rolls over" into another file this will not reopen it - you will need to stop the script using `CTRL-C` and then start it again
 * Because everytime you start Elite a new log is created, you will need to start the tailer after elite has started - I have found `ALT-TAB` to be flakey at best therefore I recommend you do not use that. Instead use the following:
+```
 1. change to run in windowed mode (`ALT-ENTER`)
 2. start the tailer from command line
 3. click back on the elite window and press unwindow (`ALT-ENTER`)
 4. If it minimises click on the program on the task bar.
+```
 
 
 I will probably replace it at a later date with a "better designed" solution.
