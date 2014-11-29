@@ -15,7 +15,8 @@ options = {
   :logging => "WARN", 
   :test_db => false,
   :url => 'http://edstarcoordinator.com/api.asmx/GetSystems',
-  :end_of_file => false
+  :end_of_file => false,
+  :verbose => false
 }
 
 optparse = OptionParser.new do |opts|
@@ -30,6 +31,9 @@ optparse = OptionParser.new do |opts|
   end
   opts.on('-e', '--end_of_file', "If supplied the script will terminate at end of log file") do |e|
     options[:end_of_file] = e
+  end
+  opts.on('-v', '--verbose', "Use verbose alerts, currently just adds a system found message with confidence rating ") do |v|
+    options[:verbose] = v
   end
 end
 
@@ -58,4 +62,4 @@ end
 restClient = EDSCRestClient.new(options[:url], options[:test_db])
 elt = EliteLogTailer.new(options[:dirname], options[:end_of_file])
 
-elt.tail(restClient)
+elt.tail(restClient, options[:verbose])

@@ -18,7 +18,7 @@ class EDSCRestClient
       :data => {
           :ver => 2,
           :test => @test,
-          :outputmode => 1,
+          :outputmode => 2,
           :filter => {
               :cr => 0,
               :knownstatus => 1,
@@ -43,12 +43,14 @@ class EDSCRestClient
       @logger.debug("System=>Name: #{json_system['name']}")
       if json_system['name'].casecmp(system) == 0
         @logger.info("Match found for system #{system}")
-        return true
+        cr = json_system['cr']
+        @logger.debug("Confidence Rating: #{cr}")
+        return true, cr
       end
       
     end
     @logger.info("No match found for system #{system}")
-    return false
+    return false, 0
   end
   
   

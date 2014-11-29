@@ -11,7 +11,7 @@ class EliteLogTailer
     @end_of_file = end_of_file 
   end
 
-  def tail(restClient)
+  def tail(restClient, verbose)
 
     logFileName = self.find_latest_log()
     
@@ -37,9 +37,15 @@ class EliteLogTailer
         if parsed_system != nil
           if lastSystem != parsed_system
             @logger.debug("Found system: '#{parsed_system}' ... attempting to find in database")
-            found_in_db = restClient.check_if_system_present(parsed_system)
+            found_in_db, cr = restClient.check_if_system_present(parsed_system)
             if found_in_db
               @logger.info("System #{parsed_system} found in db")
+              @logger.debug("System confidence rating: #{cr}")
+              if(verbose)
+                found_cr_sound_filename = "confidence_#{cr}.wav"
+                Sound.play("sys_found.wav") 
+                Sound.play(found_cr_sound_filename)
+              end
               lastSystem = parsed_system
             else
               @logger.info("System #{parsed_system} not found in db")
